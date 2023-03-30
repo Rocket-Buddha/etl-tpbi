@@ -1,0 +1,37 @@
+spring:
+  sql:
+    init:
+      mode: always
+  batch:
+    jdbc:
+      initialize-schema: always
+readers:
+  business-type:
+    path: 'business_types.csv'
+    delimiter: ';'
+    lines-to-skip: 1
+    query: 'INSERT INTO business_types (business_type_id, initcap, active) VALUES (:businessTypeId, :initcap, :active) ON CONFLICT (business_type_id) DO NOTHING'
+  sites:
+    query: 'INSERT INTO sites (site_code, latitude, longitude) VALUES (:siteCode, :latitude, :longitude) ON CONFLICT (site_code) DO NOTHING'
+  customers:
+    path: 'customers.csv'
+    delimiter: ';'
+    lines-to-skip: 1
+    query: 'INSERT INTO customers (customer_id, email_address, name, business_type_id, default_site_code, archived, is_key_account, date_updated, date_created) VALUES (:customerId, :emailAddress, :name, :businessType.businessTypeId, :defaultSite.siteCode, :archived, :isKeyAccount, :dateUpdated, :dateCreated)'
+  orders:
+    path: 'orders.csv'
+    delimiter: ';'
+    lines-to-skip: 1
+    query: 'INSERT INTO orders (order_id, batch_id, created_date, updated_date, submitted_date, delivery_date, customer_id, site_code, total, total_shipping, tracking_code, order_status, gmv_enabled, order_number, shipping_by_tracking) VALUES (:orderId, :batchId, :createdDate, :updatedDate, :submittedDate, :deliveryDate, :customer.customerId, :site.siteCode, :total, :totalShipping, :trackingCode, :orderStatus, :gmvEnabled, :orderNumber, :shippingByTracking)'
+batch:
+  chunk-size: 50000
+#data-source:
+#  driver: 'org.postgresql.Driver'
+#  url: 'jdbc:postgresql://localhost:32768/tpbi'
+#  user: 'postgres'
+#  password: 'postgrespw'
+data-source:
+  driver: 'org.postgresql.Driver'
+  url: 'jdbc:postgresql://ec2-44-206-204-65.compute-1.amazonaws.com:5432/d5m8gh8m2el2op'
+  user: 'vkckyxcefmhvsi'
+  password: '8e4032a71668e15dcd49ac184298ed23455225d0fe684ebcd3b8bbc62e297d6f'
