@@ -19,7 +19,9 @@ public class Order {
     private Customer customer;
     private Site site;
     private Double total;
+    private Double totalUSD;
     private Double totalShipping;
+    private Double totalShippingUSD;
     private String trackingCode;
     private String orderStatus;
     private Boolean gmvEnabled;

@@ -11,6 +11,7 @@ readers:
     delimiter: ';'
     lines-to-skip: 1
     query: 'INSERT INTO historical_data (date, price) VALUES (:date, :price)'
+    price-query: 'SELECT price FROM historical_data WHERE date = (SELECT MAX(date) FROM historical_data WHERE date <= ?)'
   business-type:
     path: 'business_types.csv'
     delimiter: ';'
@@ -27,10 +28,9 @@ readers:
     path: 'orders.csv'
     delimiter: ';'
     lines-to-skip: 1
-    query: 'INSERT INTO orders (order_id, batch_id, created_date, updated_date, submitted_date, delivery_date, customer_id, site_code, total, total_shipping, tracking_code, order_status, gmv_enabled, order_number, shipping_by_tracking) VALUES (:orderId, :batchId, :createdDate, :updatedDate, :submittedDate, :deliveryDate, :customer.customerId, :site.siteCode, :total, :totalShipping, :trackingCode, :orderStatus, :gmvEnabled, :orderNumber, :shippingByTracking)'
+    query: 'INSERT INTO orders (order_id, batch_id, created_date, updated_date, submitted_date, delivery_date, customer_id, site_code, total, total_usd, total_shipping, total_shipping_usd, tracking_code, order_status, gmv_enabled, order_number, shipping_by_tracking) VALUES (:orderId, :batchId, :createdDate, :updatedDate, :submittedDate, :deliveryDate, :customer.customerId, :site.siteCode, :total, :totalUSD, :totalShipping, :totalShippingUSD, :trackingCode, :orderStatus, :gmvEnabled, :orderNumber, :shippingByTracking)'
 batch:
   chunk-size: 50000
-
 postgres:
   datasource:
     driver: 'org.postgresql.Driver'
@@ -43,7 +43,6 @@ h2:
     url: 'jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE'
     user: 'sa'
     password: ''
-
 #data-source:
 #  driver: 'org.postgresql.Driver'
 #  url: 'jdbc:postgresql://ec2-44-206-204-65.compute-1.amazonaws.com:5432/d5m8gh8m2el2op'
