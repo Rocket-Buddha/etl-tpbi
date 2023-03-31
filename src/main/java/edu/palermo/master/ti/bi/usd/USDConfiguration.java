@@ -1,7 +1,7 @@
-package edu.palermo.master.ti.bi.businesstypes;
+package edu.palermo.master.ti.bi.usd;
 
-import edu.palermo.master.ti.bi.businesstypes.dto.BusinessTypeRecord;
-import edu.palermo.master.ti.bi.businesstypes.entities.BusinessType;
+import edu.palermo.master.ti.bi.usd.dto.USDRecord;
+import edu.palermo.master.ti.bi.usd.entities.USD;
 import org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilder;
@@ -18,42 +18,49 @@ import org.springframework.core.io.ClassPathResource;
 import javax.sql.DataSource;
 
 @Configuration
-public class BusinessTypeConfiguration {
+public class USDConfiguration {
 
-    public static final String BUSINESS_TYPE_RECORD_ITEM_READER = "businessTypeRecordItemReader";
+    public static final String USD_RECORD_ITEM_READER = "USDRecordItemReader";
     @Autowired
-    @Qualifier("postgresDataSource")
-    private DataSource postgresDataSource;
-    @Value("${readers.business-type.path}")
+    @Qualifier("h2DataSource")
+    private DataSource h2DataSource;
+    @Value("${readers.usd.path}")
     private String path;
-    @Value("${readers.business-type.delimiter}")
+    @Value("${readers.usd.delimiter}")
     private String delimiter;
-    @Value("${readers.business-type.lines-to-skip}")
+    @Value("${readers.usd.lines-to-skip}")
     private int linesToSkip;
-    @Value("${readers.business-type.query}")
+    @Value("${readers.usd.query}")
     private String query;
 
     @Bean
-    public FlatFileItemReader<BusinessTypeRecord> businessTypeReader(){
-        return new FlatFileItemReaderBuilder<BusinessTypeRecord>()
-                .name(BUSINESS_TYPE_RECORD_ITEM_READER)
+    public FlatFileItemReader<USDRecord> usdReader() {
+        return new FlatFileItemReaderBuilder<USDRecord>()
+                .name(USD_RECORD_ITEM_READER)
                 .resource(new ClassPathResource(path))
                 .linesToSkip(linesToSkip)
                 .delimited()
                 .delimiter(delimiter)
-                .names("initcap", "active", "business_type_id")
-                .fieldSetMapper(new BeanWrapperFieldSetMapper<BusinessTypeRecord>() {{
-                    setTargetType(BusinessTypeRecord.class);
+                .names("date",
+                        "last",
+                        "opening",
+                        "max",
+                        "min",
+                        "vol",
+                        "var")
+                .fieldSetMapper(new BeanWrapperFieldSetMapper<USDRecord>() {{
+                    setTargetType(USDRecord.class);
                 }})
                 .build();
     }
+
     @Bean
-    public JdbcBatchItemWriter<BusinessType> businessTypeWriter() {
-        return new JdbcBatchItemWriterBuilder<BusinessType>()
+    public JdbcBatchItemWriter<USD> usdWriter() {
+        return new JdbcBatchItemWriterBuilder<USD>()
                 .itemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<>())
                 .assertUpdates(false)
                 .sql(query)
-                .dataSource(postgresDataSource)
+                .dataSource(h2DataSource)
                 .build();
     }
 }

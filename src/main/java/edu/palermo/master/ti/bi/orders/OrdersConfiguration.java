@@ -9,6 +9,7 @@ import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
 import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,7 +22,8 @@ public class OrdersConfiguration {
 
     public static final String ORDERS_RECORD_ITEM_READER = "ordersTypeRecordItemReader";
     @Autowired
-    private DataSource dataSource;
+    @Qualifier("postgresDataSource")
+    private DataSource postgresDataSource;
     @Value("${readers.orders.path}")
     private String path;
     @Value("${readers.orders.delimiter}")
@@ -69,7 +71,7 @@ public class OrdersConfiguration {
                 .itemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<>())
                 .assertUpdates(false)
                 .sql(query)
-                .dataSource(dataSource)
+                .dataSource(postgresDataSource)
                 .build();
     }
 }

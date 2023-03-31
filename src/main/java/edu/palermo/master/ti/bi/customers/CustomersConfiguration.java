@@ -9,6 +9,7 @@ import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
 import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,7 +22,8 @@ public class CustomersConfiguration {
 
     public static final String CUSTOMERS_RECORD_ITEM_READER = "customersRecordItemReader";
     @Autowired
-    private DataSource dataSource;
+    @Qualifier("postgresDataSource")
+    private DataSource postgresDataSource;
     @Value("${readers.customers.path}")
     private String path;
     @Value("${readers.customers.delimiter}")
@@ -59,7 +61,7 @@ public class CustomersConfiguration {
         return new JdbcBatchItemWriterBuilder<Customer>()
                 .itemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<>())
                 .sql(query)
-                .dataSource(dataSource)
+                .dataSource(postgresDataSource)
                 .build();
     }
 }

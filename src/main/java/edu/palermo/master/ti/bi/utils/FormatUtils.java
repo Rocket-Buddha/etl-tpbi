@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 
 public class FormatUtils {
 
-    public static LocalDateTime formatDate(final String date) {
+    public static LocalDateTime formatLocalDateTime(final String date) {
 
         if (Pattern.compile("^\\d{4}-\\d{2}-\\d{2}$").matcher(date).matches()) {
             return LocalDate.parse(date).atStartOfDay();
@@ -25,6 +25,10 @@ public class FormatUtils {
         }
         return LocalDateTime.parse(date,
                 DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SS"));
+    }
+
+    public static LocalDate formatLocalDate(final String date) {
+        return LocalDate.parse(date, DateTimeFormatter.ofPattern("dd.MM.yyyy"));
     }
 
     public static BusinessType formatBusinessType(final String bt) {

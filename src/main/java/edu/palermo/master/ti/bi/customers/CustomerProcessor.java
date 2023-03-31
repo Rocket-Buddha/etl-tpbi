@@ -33,8 +33,8 @@ public class CustomerProcessor implements ItemProcessor<CustomerRecord, Customer
                 .defaultSite(formatSite(item.getSiteCode()))
                 .archived(Boolean.valueOf(item.getArchived()))
                 .isKeyAccount(Boolean.valueOf(item.getIsKeyAccount()))
-                .dateUpdated(formatDate(item.getDateUpdated()))
-                .dateCreated(formatDate(item.getDateCreated()))
+                .dateUpdated(formatLocalDateTime(item.getDateUpdated()))
+                .dateCreated(formatLocalDateTime(item.getDateCreated()))
                 .build();
 
         customerCache.put(customerID, customer);
