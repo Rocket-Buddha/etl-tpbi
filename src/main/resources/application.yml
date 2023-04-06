@@ -28,7 +28,7 @@ readers:
     path: 'orders.csv'
     delimiter: ';'
     lines-to-skip: 1
-    query: 'INSERT INTO orders (order_id, batch_id, created_date, updated_date, submitted_date, delivery_date, customer_id, site_code, total, total_usd, total_shipping, total_shipping_usd, tracking_code, order_status, gmv_enabled, order_number, shipping_by_tracking) VALUES (:orderId, :batchId, :createdDate, :updatedDate, :submittedDate, :deliveryDate, :customer.customerId, :site.siteCode, :total, :totalUSD, :totalShipping, :totalShippingUSD, :trackingCode, :orderStatus, :gmvEnabled, :orderNumber, :shippingByTracking)'
+    query: 'INSERT INTO orders (order_id, batch_id, created_date, updated_date, submitted_date, delivery_date, customer_id, site_code, total, total_usd, total_shipping, total_shipping_usd, tracking_code, order_status, gmv_enabled, order_number, shipping_by_tracking, usd_official_listing) VALUES (:orderId, :batchId, :createdDate, :updatedDate, :submittedDate, :deliveryDate, :customer.customerId, :site.siteCode, :total, :totalUSD, :totalShipping, :totalShippingUSD, :trackingCode, :orderStatus, :gmvEnabled, :orderNumber, :shippingByTracking, :usdOfficialListing)'
 batch:
   chunk-size: 50000
 h2:
