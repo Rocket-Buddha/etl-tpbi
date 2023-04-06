@@ -10,12 +10,8 @@ import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import static edu.palermo.master.ti.bi.utils.FormatUtils.*;
 
@@ -53,6 +49,7 @@ public class OrderProcessor implements ItemProcessor<OrderRecord, Order> {
 				.site(formatSite(item.getSiteCode()))
 				.total(Double.valueOf(item.getTotal()))
 				.totalUSD(total / usdPrice)
+				.usdOfficialListing(usdPrice)
 				.totalShipping(totalShipping / usdPrice)
 				.trackingCode(item.getTrackingCode())
 				.orderStatus(item.getOrderStatus())

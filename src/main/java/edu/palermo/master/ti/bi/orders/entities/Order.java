@@ -22,6 +22,8 @@ public class Order {
     private Double totalUSD;
     private Double totalShipping;
     private Double totalShippingUSD;
+    private Double usdOfficialListing;
+    private Double usdParallelListing;
     private String trackingCode;
     private String orderStatus;
     private Boolean gmvEnabled;
