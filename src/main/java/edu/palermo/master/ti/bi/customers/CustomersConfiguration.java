@@ -61,6 +61,7 @@ public class CustomersConfiguration {
         return new JdbcBatchItemWriterBuilder<Customer>()
                 .itemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<>())
                 .sql(query)
+                .assertUpdates(false)
                 .dataSource(postgresDataSource)
                 .build();
     }
