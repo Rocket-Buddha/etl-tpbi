@@ -1,3 +1,5 @@
+server:
+  port: ${PORT:8080}
 spring:
   sql:
     init:
@@ -5,6 +7,8 @@ spring:
   batch:
     jdbc:
       initialize-schema: always
+    job:
+      enable: false
 readers:
   usd:
     path: 'usd.csv'
@@ -28,7 +32,7 @@ readers:
     path: 'orders.csv'
     delimiter: ';'
     lines-to-skip: 1
-    query: 'INSERT INTO orders (order_id, batch_id, created_date, updated_date, submitted_date, delivery_date, customer_id, site_code, total, total_usd, total_shipping, total_shipping_usd, tracking_code, order_status, gmv_enabled, order_number, shipping_by_tracking, usd_official_listing) VALUES (:orderId, :batchId, :createdDate, :updatedDate, :submittedDate, :deliveryDate, :customer.customerId, :site.siteCode, :total, :totalUSD, :totalShipping, :totalShippingUSD, :trackingCode, :orderStatus, :gmvEnabled, :orderNumber, :shippingByTracking, :usdOfficialListing)'
+    query: 'INSERT INTO orders (order_id, batch_id, created_date, updated_date, submitted_date, delivery_date, customer_id, site_code, total, total_usd, total_shipping, total_shipping_usd, tracking_code, order_status, gmv_enabled, order_number, shipping_by_tracking, usd_official_listing) VALUES (:orderId, :batchId, :createdDate, :updatedDate, :submittedDate, :deliveryDate, :customer.customerId, :site.siteCode, :total, :totalUSD, :totalShipping, :totalShippingUSD, :trackingCode, :orderStatus, :gmvEnabled, :orderNumber, :shippingByTracking, :usdOfficialListing) ON CONFLICT (order_id) DO NOTHING'
 batch:
   chunk-size: 50000
 h2:
@@ -43,9 +47,3 @@ postgres:
     url: 'jdbc:postgresql://ec2-44-206-204-65.compute-1.amazonaws.com:5432/d5m8gh8m2el2op'
     user: 'vkckyxcefmhvsi'
     password: '8e4032a71668e15dcd49ac184298ed23455225d0fe684ebcd3b8bbc62e297d6f'
-#postgres:
-#  datasource:
-#    driver: 'org.postgresql.Driver'
-#    url: 'jdbc:postgresql://localhost:32768/tpbi'
-#    user: 'postgres'
-#    password: 'postgrespw'
