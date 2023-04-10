@@ -27,7 +27,7 @@ readers:
     path: 'customers.csv'
     delimiter: ';'
     lines-to-skip: 1
-    query: 'INSERT INTO customers (customer_id, email_address, name, business_type_id, default_site_code, archived, is_key_account, date_updated, date_created) VALUES (:customerId, :emailAddress, :name, :businessType.businessTypeId, :defaultSite.siteCode, :archived, :isKeyAccount, :dateUpdated, :dateCreated)'
+    query: 'INSERT INTO customers (customer_id, email_address, name, business_type_id, default_site_code, archived, is_key_account, date_updated, date_created) VALUES (:customerId, :emailAddress, :name, :businessType.businessTypeId, :defaultSite.siteCode, :archived, :isKeyAccount, :dateUpdated, :dateCreated) ON CONFLICT (customer_id) DO NOTHING'
   orders:
     path: 'orders.csv'
     delimiter: ';'
