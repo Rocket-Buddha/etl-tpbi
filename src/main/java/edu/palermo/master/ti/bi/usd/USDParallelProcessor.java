@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.stereotype.Component;
 
-import static edu.palermo.master.ti.bi.utils.FormatUtils.formatLocalDate;
+import static edu.palermo.master.ti.bi.utils.FormatUtils.formatESLocalDate;
 
 @Component
 public class USDParallelProcessor implements ItemProcessor<USDParallelRecord, USD> {
@@ -17,7 +17,7 @@ public class USDParallelProcessor implements ItemProcessor<USDParallelRecord, US
 	@Override
 	public USD process(USDParallelRecord item) {
 		final USD parallelUsd = USD.builder()
-				.date(formatLocalDate(item.getFecha()))
+				.date(formatESLocalDate(item.getFecha()))
 				.price(item.getInformal())
 				.build();
 

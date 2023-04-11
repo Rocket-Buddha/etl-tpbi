@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.regex.Pattern;
 
 public class FormatUtils {
@@ -29,6 +30,10 @@ public class FormatUtils {
 
     public static LocalDate formatLocalDate(final String date) {
         return LocalDate.parse(date, DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+    }
+
+    public static LocalDate formatESLocalDate(final String date) {
+        return LocalDate.parse(date, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
     }
 
     public static BusinessType formatBusinessType(final String bt) {
