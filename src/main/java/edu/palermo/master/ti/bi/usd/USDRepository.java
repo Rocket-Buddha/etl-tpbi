@@ -21,6 +21,9 @@ public class USDRepository implements USDRepositoryInterface {
     @Value("${readers.usd.price-query}")
     private String query;
 
+    @Value("${readers.usd.price-parallel-query}")
+    private String parallelQuery;
+
     @Override
     public Double getPriceByDate(LocalDate dateParameter) {
 
@@ -29,6 +32,16 @@ public class USDRepository implements USDRepositoryInterface {
         }};
 
         return Double.valueOf(String.valueOf(h2JdbcTemplate.queryForList(query, dateParameter).stream().findFirst()
+                .orElse(defaultPrice).get("PRICE")));
+    }
+
+    @Override
+    public Double getParallelPriceByDate(LocalDate dateParameter) {
+        final Map<String, Object> defaultPrice = new HashMap<>() {{
+            put("PRICE", BigDecimal.ZERO);
+        }};
+
+        return Double.valueOf(String.valueOf(h2JdbcTemplate.queryForList(parallelQuery, dateParameter).stream().findFirst()
                 .orElse(defaultPrice).get("PRICE")));
     }
 }

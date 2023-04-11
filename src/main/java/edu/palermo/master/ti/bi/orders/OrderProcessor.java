@@ -35,6 +35,9 @@ public class OrderProcessor implements ItemProcessor<OrderRecord, Order> {
 		final Double usdPrice
 				= usdRepository.getPriceByDate(createdDate.toLocalDate());
 
+		final Double usdParallelPrice
+				= usdRepository.getParallelPriceByDate(createdDate.toLocalDate());
+
 		final Double total = Double.valueOf(item.getTotal());
 		final Double totalShipping = Double.valueOf(item.getTotalShipping());
 
@@ -50,6 +53,7 @@ public class OrderProcessor implements ItemProcessor<OrderRecord, Order> {
 				.total(Double.valueOf(item.getTotal()))
 				.totalUSD(total / usdPrice)
 				.usdOfficialListing(usdPrice)
+				.usdParallelListing(usdParallelPrice)
 				.totalShipping(totalShipping)
 				.totalShippingUSD(totalShipping / usdPrice)
 				.trackingCode(item.getTrackingCode())

@@ -1,5 +1,6 @@
 package edu.palermo.master.ti.bi.usd;
 
+import edu.palermo.master.ti.bi.usd.dto.USDParallelRecord;
 import edu.palermo.master.ti.bi.usd.dto.USDRecord;
 import edu.palermo.master.ti.bi.usd.entities.USD;
 import org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider;
@@ -21,17 +22,22 @@ import javax.sql.DataSource;
 public class USDConfiguration {
 
     public static final String USD_RECORD_ITEM_READER = "USDRecordItemReader";
+    public static final String USD_PARALLEL_RECORD_ITEM_READER = "USDParallelRecordItemReader";
     @Autowired
     @Qualifier("h2DataSource")
     private DataSource h2DataSource;
     @Value("${readers.usd.path}")
     private String path;
+    @Value("${readers.usd.parallel-path}")
+    private String parallelPath;
     @Value("${readers.usd.delimiter}")
     private String delimiter;
     @Value("${readers.usd.lines-to-skip}")
     private int linesToSkip;
     @Value("${readers.usd.query}")
     private String query;
+    @Value("${readers.usd.parallel-query}")
+    private String parallelQuery;
 
     @Bean
     public FlatFileItemReader<USDRecord> usdReader() {
@@ -51,6 +57,34 @@ public class USDConfiguration {
                 .fieldSetMapper(new BeanWrapperFieldSetMapper<USDRecord>() {{
                     setTargetType(USDRecord.class);
                 }})
+                .build();
+    }
+
+    @Bean
+    public FlatFileItemReader<USDParallelRecord> usdParallelReader() {
+        return new FlatFileItemReaderBuilder<USDParallelRecord>()
+                .name(USD_PARALLEL_RECORD_ITEM_READER)
+                .resource(new ClassPathResource(parallelPath))
+                .linesToSkip(linesToSkip)
+                .delimited()
+                .delimiter(delimiter)
+                .names("fecha",
+                        "ccl",
+                        "mep",
+                        "informal")
+                .fieldSetMapper(new BeanWrapperFieldSetMapper<USDParallelRecord>() {{
+                    setTargetType(USDParallelRecord.class);
+                }})
+                .build();
+    }
+
+    @Bean
+    public JdbcBatchItemWriter<USD> usdParallelWriter() {
+        return new JdbcBatchItemWriterBuilder<USD>()
+                .itemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<>())
+                .assertUpdates(false)
+                .sql(parallelQuery)
+                .dataSource(h2DataSource)
                 .build();
     }
 

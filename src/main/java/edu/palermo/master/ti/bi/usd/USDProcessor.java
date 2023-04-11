@@ -16,13 +16,13 @@ public class USDProcessor implements ItemProcessor<USDRecord, USD> {
 
 	@Override
 	public USD process(USDRecord item) {
-		final USD businessType = USD.builder()
+		final USD usd = USD.builder()
 				.date(formatLocalDate(item.getDate()))
 				.price((item.getMax() + item.getMin())/2)
 				.build();
 
 		//log.info(String.valueOf(businessType));
 
-		return businessType;
+		return usd;
 	}
 }
