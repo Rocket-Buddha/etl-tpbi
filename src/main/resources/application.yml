@@ -37,7 +37,7 @@ readers:
     lines-to-skip: 1
     query: 'INSERT INTO orders (order_id, batch_id, created_date, updated_date, submitted_date, delivery_date, customer_id, site_code, total, total_usd, total_shipping, total_shipping_usd, tracking_code, order_status, gmv_enabled, order_number, shipping_by_tracking, usd_official_listing, usd_parallel_listing) VALUES (:orderId, :batchId, :createdDate, :updatedDate, :submittedDate, :deliveryDate, :customer.customerId, :site.siteCode, :total, :totalUSD, :totalShipping, :totalShippingUSD, :trackingCode, :orderStatus, :gmvEnabled, :orderNumber, :shippingByTracking, :usdOfficialListing, :usdParallelListing) ON CONFLICT (order_id) DO UPDATE SET batch_id = EXCLUDED.batch_id, created_date = EXCLUDED.created_date, updated_date = EXCLUDED.updated_date, submitted_date = EXCLUDED.submitted_date, delivery_date = EXCLUDED.delivery_date, customer_id = EXCLUDED.customer_id, site_code = EXCLUDED.site_code, total = EXCLUDED.total, total_usd = EXCLUDED.total_usd, total_shipping = EXCLUDED.total_shipping, total_shipping_usd = EXCLUDED.total_shipping_usd, tracking_code = EXCLUDED.tracking_code, order_status = EXCLUDED.order_status, gmv_enabled = EXCLUDED.gmv_enabled, order_number = EXCLUDED.order_number, shipping_by_tracking = EXCLUDED.shipping_by_tracking, usd_official_listing = EXCLUDED.usd_official_listing, usd_parallel_listing = EXCLUDED.usd_parallel_listing'
 batch:
-  chunk-size: 500000
+  chunk-size: 25000
 h2:
   datasource:
     driver: 'org.h2.Driver'
