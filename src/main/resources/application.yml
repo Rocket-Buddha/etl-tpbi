@@ -6,7 +6,7 @@ spring:
       mode: always
   batch:
     job:
-      enabled: true
+      enabled: false
     jdbc:
       initialize-schema: always
 readers:
