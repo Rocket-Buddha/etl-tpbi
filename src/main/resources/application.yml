@@ -6,7 +6,7 @@ spring:
       mode: always
   batch:
     job:
-      enabled: false
+      enabled: true
     jdbc:
       initialize-schema: always
 readers:
@@ -18,7 +18,7 @@ readers:
     query: 'INSERT INTO historical_data (date, price) VALUES (:date, :price)'
     parallel-query: 'INSERT INTO historical_parallel_data (date, price) VALUES (:date, :price)'
     price-query: 'SELECT price FROM historical_data WHERE date = (SELECT MAX(date) FROM historical_data WHERE date <= ?)'
-    price-parallel-query: 'SELECT price FROM historical_parallel_data WHERE date = (SELECT MAX(date) FROM historical_data WHERE date <= ?)'
+    price-parallel-query: 'SELECT price FROM historical_parallel_data WHERE date = (SELECT MAX(date) FROM historical_parallel_data WHERE price != 0 AND date <= ?)'
   business-type:
     path: 'business_types.csv'
     delimiter: ';'

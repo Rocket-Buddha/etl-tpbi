@@ -7,6 +7,7 @@ import edu.palermo.master.ti.bi.customers.entities.Customer;
 import edu.palermo.master.ti.bi.orders.dto.OrderRecord;
 import edu.palermo.master.ti.bi.orders.entities.Order;
 import edu.palermo.master.ti.bi.sites.entities.Site;
+import edu.palermo.master.ti.bi.usd.dto.USDParallelRecord;
 import edu.palermo.master.ti.bi.usd.dto.USDRecord;
 import edu.palermo.master.ti.bi.usd.entities.USD;
 import org.springframework.batch.core.Job;
@@ -18,10 +19,12 @@ import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.file.FlatFileItemReader;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
+
 import java.util.HashMap;
 
 @Configuration
@@ -29,6 +32,8 @@ public class BatchConfiguration {
 
     private static final String ETL_JOB = "etlJob";
     private static final String LOAD_USDS_STEP = "loadUSDsStep";
+
+    private static final String LOAD_PARALLEL_USDS_STEP = "loadParralelUSDsStep";
     private static final String LOAD_BUSINESS_TYPES_STEP = "loadBusinessTypesStep";
     private static final String LOAD_SITES_FROM_ORDERS_STEP = "loadSitesFromOrdersStep";
     private static final String LOAD_SITES_FROM_CUSTOMERS_STEP = "loadSitesFromCustomersStep";
@@ -41,6 +46,7 @@ public class BatchConfiguration {
     public Job etlJob(JobRepository jobRepository,
                       JobCompletionNotificationListener listener,
                       Step loadUSDsStep,
+                      Step loadParallelUSDsStep,
                       Step loadBusinessTypesStep,
                       Step loadSitesFromOrdersStep,
                       Step loadSitesFromCustomersStep,
@@ -50,6 +56,7 @@ public class BatchConfiguration {
                 .incrementer(new RunIdIncrementer())
                 .listener(listener)
                 .flow(loadUSDsStep)
+                .next(loadParallelUSDsStep)
                 .next(loadBusinessTypesStep)
                 .next(loadSitesFromOrdersStep)
                 .next(loadSitesFromCustomersStep)
@@ -60,11 +67,11 @@ public class BatchConfiguration {
     }
 
     @Bean
-    public Step loadUSDsStep( JobRepository jobRepository,
-                                       PlatformTransactionManager transactionManager,
-                                       FlatFileItemReader<USDRecord> usdReader,
-                                       ItemProcessor<USDRecord, USD> usdProcessor,
-                                       JdbcBatchItemWriter<USD> usdWriter) {
+    public Step loadUSDsStep(JobRepository jobRepository,
+                             PlatformTransactionManager transactionManager,
+                             FlatFileItemReader<USDRecord> usdReader,
+                             ItemProcessor<USDRecord, USD> usdProcessor,
+                             JdbcBatchItemWriter<USD> usdWriter) {
         return new StepBuilder(LOAD_USDS_STEP, jobRepository)
                 .<USDRecord, USD>chunk(chunkSize, transactionManager)
                 .reader(usdReader)
@@ -74,7 +81,21 @@ public class BatchConfiguration {
     }
 
     @Bean
-    public Step loadBusinessTypesStep( JobRepository jobRepository,
+    public Step loadParallelUSDsStep(JobRepository jobRepository,
+                                     PlatformTransactionManager transactionManager,
+                                     FlatFileItemReader<USDParallelRecord> usdParallelReader,
+                                     ItemProcessor<USDParallelRecord, USD> usdParallelProcessor,
+                                     JdbcBatchItemWriter<USD> usdParallelWriter) {
+        return new StepBuilder(LOAD_PARALLEL_USDS_STEP, jobRepository)
+                .<USDParallelRecord, USD>chunk(chunkSize, transactionManager)
+                .reader(usdParallelReader)
+                .processor(usdParallelProcessor)
+                .writer(usdParallelWriter)
+                .build();
+    }
+
+    @Bean
+    public Step loadBusinessTypesStep(JobRepository jobRepository,
                                       PlatformTransactionManager transactionManager,
                                       FlatFileItemReader<BusinessTypeRecord> businessTypeReader,
                                       ItemProcessor<BusinessTypeRecord, BusinessType> businessTypeProcessor,
@@ -130,7 +151,7 @@ public class BatchConfiguration {
     }
 
     @Bean
-    public Step loadOrdersStep( JobRepository jobRepository,
+    public Step loadOrdersStep(JobRepository jobRepository,
                                PlatformTransactionManager transactionManager,
                                FlatFileItemReader<OrderRecord> orderReader,
                                ItemProcessor<OrderRecord, Order> orderProcessor,
