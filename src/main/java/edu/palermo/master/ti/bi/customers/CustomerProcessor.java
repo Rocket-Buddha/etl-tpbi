@@ -16,7 +16,7 @@ import static edu.palermo.master.ti.bi.utils.FormatUtils.*;
 public class CustomerProcessor implements ItemProcessor<CustomerRecord, Customer> {
 
     @Autowired
-    private HashMap<Long, Customer> customerCache;
+    private HashMap<Long, Customer> customersCache;
 
     private static final Logger log = LoggerFactory.getLogger(CustomerProcessor.class);
 
@@ -24,6 +24,10 @@ public class CustomerProcessor implements ItemProcessor<CustomerRecord, Customer
     public Customer process(CustomerRecord item) {
 
         final Long customerID = Long.valueOf(item.getCustomerId());
+
+        if(customersCache.containsKey(customerID)) {
+            return null;
+        }
 
         final Customer customer = Customer.builder()
                 .customerId(customerID)
@@ -37,7 +41,7 @@ public class CustomerProcessor implements ItemProcessor<CustomerRecord, Customer
                 .dateCreated(formatLocalDateTime(item.getDateCreated()))
                 .build();
 
-        customerCache.put(customerID, customer);
+        customersCache.put(customerID, customer);
 
         //log.info(String.valueOf(customer));
 

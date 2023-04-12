@@ -19,7 +19,6 @@ import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.file.FlatFileItemReader;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -165,7 +164,12 @@ public class BatchConfiguration {
     }
 
     @Bean
-    public HashMap<Long, Customer> customerCache() {
+    public HashMap<Long, Customer> customersCache() {
+        return new HashMap<>();
+    }
+
+    @Bean
+    public HashMap<String, Site> sitesCache() {
         return new HashMap<>();
     }
 }

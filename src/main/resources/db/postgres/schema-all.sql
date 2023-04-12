@@ -53,7 +53,7 @@
 --     order_number          VARCHAR(255),
 --     shipping_by_tracking  DECIMAL,
 --     usd_official_listing  DECIMAL,
---     used_parallel_listing DECIMAL,
+--     usd_parallel_listing  DECIMAL,
 --     FOREIGN KEY (customer_id) REFERENCES customers (customer_id),
 --     FOREIGN KEY (site_code) REFERENCES sites (site_code)
 -- );
